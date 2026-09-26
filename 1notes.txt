@@ -1,0 +1,34 @@
+# Application Architecture & System Blueprint
+**Project:** Online Voting System (Student Government Elections)
+
+---
+
+## 1. Architectural Pattern (Separation of Concerns)
+
+The application follows a decoupled Layered Architecture to separate data representations, persistence mechanisms, and business workflows.
+
+### Layer Breakdown
+
+1. **Models (Domain Entities)**
+   - **Role:** Pure data containers / blueprints.
+   - **Responsibilities:** Define class properties, enforce primitive data types, and provide basic getters and setters.
+   - **Rules:** Pure domain models have zero knowledge of databases, SQL queries, array transformations, or business logic.
+
+2. **Repositories (Data Access Layer)**
+   - **Role:** The bridge between SQL database storage and PHP objects.
+   - **Responsibilities:** 
+     - Execute database queries (`SELECT`, `INSERT`, `UPDATE`, `DELETE`).
+     - **Packing:** Converting raw database rows (`PDO::FETCH_ASSOC`) into instantiated Model objects.
+     - **Unpacking:** Extracting properties from Model objects via getters to run parameterized SQL queries.
+   - **Rules:** Repositories contain NO business rules or domain validation logic.
+
+3. **Services / Use Cases (Business Logic Layer)**
+   - **Role:** The brain of the application workflow.
+   - **Responsibilities:**
+     - Enforce business rules (e.g., checking if an election is `ongoing`, verifying voter eligibility, preventing duplicate votes).
+     - Coordinate multiple repositories.
+     - Trigger status transitions (e.g., closing elections and transitioning winners to active incumbents).
+
+4. **Controllers / UI (Presentation Layer)**
+   - **Role:** Entry point for HTTP requests and API endpoints.
+   - **Responsibilities:** Handle input validation, call appropriate Service methods, and render views or return JSON responses.
